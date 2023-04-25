@@ -58,7 +58,7 @@ struct write_para
   int size;
 };
 
-char error_buf[128];
+static char error_buf[128];
 
 int writeall(int fd, char* buf, int len);
 int readall(int fd, char* buf, int len);

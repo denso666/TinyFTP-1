@@ -1,34 +1,35 @@
 CC = gcc
 CFLAGS = -Wall
+PREFIX_CC = cross_
 
 .PHONY: clean
 
-all: server
+all: $(PREFIX_CC)server
 
-server: server.o utils.o rsa.o commands.o
-	${CROSS_COMPILE}$(CC) $(CFLAGS) server.o utils.o rsa.o commands.o -o ../server -lpthread
+$(PREFIX_CC)server: $(PREFIX_CC)server.o $(PREFIX_CC)utils.o $(PREFIX_CC)rsa.o $(PREFIX_CC)commands.o
+	${CROSS_COMPILE}$(CC) $(CFLAGS) $^ -o ../$(PREFIX_CC)server -lpthread
 
-server.o: server.c
-	${CROSS_COMPILE}$(CC) $(CFLAGS) -c server.c -o server.o
+$(PREFIX_CC)server.o: server.c
+	${CROSS_COMPILE}$(CC) $(CFLAGS) -c server.c -o $@
 
-commands.o: commands.h commands.c
-	${CROSS_COMPILE}$(CC) $(CFLAGS) -c commands.c -o commands.o
+$(PREFIX_CC)commands.o: commands.h commands.c
+	${CROSS_COMPILE}$(CC) $(CFLAGS) -c commands.c -o $@
 
-utils.o: utils.h utils.c
-	${CROSS_COMPILE}$(CC) $(CFLAGS) -c utils.c -o utils.o
+$(PREFIX_CC)utils.o: utils.h utils.c
+	${CROSS_COMPILE}$(CC) $(CFLAGS) -c utils.c -o $@
 
-rsa.o: rsa.h rsa.c
-	${CROSS_COMPILE}$(CC) $(CFLAGS) -c rsa.c -o rsa.o
+$(PREFIX_CC)rsa.o: rsa.h rsa.c
+	${CROSS_COMPILE}$(CC) $(CFLAGS) -c rsa.c -o $@
 
-test: utils.o test.c rsa.o
+test: $(PREFIX_CC)utils.o $(PREFIX_CC)test.c $(PREFIX_CC)rsa.o
 	clear
 	${CROSS_COMPILE}$(CC) $(CFLAGS) -c test.c -o test.o
-	${CROSS_COMPILE}$(CC) $(CFLAGS) test.o utils.o rsa.o -o utest -lpthread
+	${CROSS_COMPILE}$(CC) $(CFLAGS) $^ -o utest -lpthread
 	./utest
 	rm -rf ./utest
 	make clean
 
 clean:
-	@rm -rf *.o ../server
+	@rm -rf *.o ../$(PREFIX_CC)server
 	@echo "Cleaned"
 
